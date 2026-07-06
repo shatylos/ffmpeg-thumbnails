@@ -1,7 +1,7 @@
 package app
 
 import (
-	"github.com/shatylos/ffmpeg-screenshots/tools/apperrors"
+	"github.com/shatylos/ffmpeg-thumbnails/tools/apperrors"
 	"gopkg.in/yaml.v2"
 	"os"
 	"time"

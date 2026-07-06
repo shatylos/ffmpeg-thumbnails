@@ -1,4 +1,4 @@
-module github.com/shatylos/ffmpeg-screenshots
+module github.com/shatylos/ffmpeg-thumbnails
 
 go 1.24.0
 

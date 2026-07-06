@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"github.com/shatylos/ffmpeg-screenshots/tools/apperrors"
-	"github.com/shatylos/ffmpeg-screenshots/tools/logger"
+	"github.com/shatylos/ffmpeg-thumbnails/tools/apperrors"
+	"github.com/shatylos/ffmpeg-thumbnails/tools/logger"
 	"os/exec"
 	"time"
 )

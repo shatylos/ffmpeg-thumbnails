@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"github.com/shatylos/ffmpeg-screenshots/internal/app"
-	"github.com/shatylos/ffmpeg-screenshots/tools/logger"
+	"github.com/shatylos/ffmpeg-thumbnails/internal/app"
+	"github.com/shatylos/ffmpeg-thumbnails/tools/logger"
 	"os/signal"
 	"syscall"
 )

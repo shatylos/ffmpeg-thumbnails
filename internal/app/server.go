@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/shatylos/ffmpeg-screenshots/tools/apperrors"
-	"github.com/shatylos/ffmpeg-screenshots/tools/logger"
+	"github.com/shatylos/ffmpeg-thumbnails/tools/apperrors"
+	"github.com/shatylos/ffmpeg-thumbnails/tools/logger"
 )
 
 // StartServer runs an HTTP server that serves the latest screenshots from

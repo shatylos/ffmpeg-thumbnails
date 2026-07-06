@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"sync"
 
-	"github.com/shatylos/ffmpeg-screenshots/tools/apperrors"
-	"github.com/shatylos/ffmpeg-screenshots/tools/logger"
+	"github.com/shatylos/ffmpeg-thumbnails/tools/apperrors"
+	"github.com/shatylos/ffmpeg-thumbnails/tools/logger"
 )
 
 // Storage persists screenshots by their output name and reads them back.

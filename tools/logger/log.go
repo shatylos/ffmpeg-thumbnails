@@ -2,7 +2,7 @@ package logger
 
 import (
 	"fmt"
-	"github.com/shatylos/ffmpeg-screenshots/tools/terminal"
+	"github.com/shatylos/ffmpeg-thumbnails/tools/terminal"
 	"log"
 	"os"
 	"runtime"

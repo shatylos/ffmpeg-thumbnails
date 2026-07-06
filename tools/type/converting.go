@@ -1,7 +1,7 @@
 package _type
 
 import (
-	"github.com/shatylos/ffmpeg-screenshots/tools/apperrors"
+	"github.com/shatylos/ffmpeg-thumbnails/tools/apperrors"
 	"strconv"
 	"time"
 )
