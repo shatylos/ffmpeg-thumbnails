@@ -1,23 +1,23 @@
 package app
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"github.com/shatylos/ffmpeg-screenshots/tools/apperrors"
 	"github.com/shatylos/ffmpeg-screenshots/tools/logger"
 	"os/exec"
-	"path/filepath"
 	"time"
 )
 
 var inProcess = map[string]bool{}
 
-func HandleQueue(ctx context.Context, config Config) {
+func HandleQueue(ctx context.Context, config Config, storage Storage) {
 	queue := make(chan StreamConfig, config.Forks)
 
 	go func() {
 		for stream := range queue {
-			go handleStream(ctx, config, stream)
+			go handleStream(ctx, config, stream, storage)
 		}
 	}()
 
@@ -38,7 +38,7 @@ func HandleQueue(ctx context.Context, config Config) {
 	}()
 }
 
-func handleStream(ctx context.Context, config Config, streamConfig StreamConfig) {
+func handleStream(ctx context.Context, config Config, streamConfig StreamConfig, storage Storage) {
 	if inProcess[streamConfig.Output] {
 		logger.Warning(fmt.Sprintf("stream handling [%s] still in progress", streamConfig.Output))
 		return
@@ -48,8 +48,6 @@ func handleStream(ctx context.Context, config Config, streamConfig StreamConfig)
 		inProcess[streamConfig.Output] = false
 	}()
 
-	output := filepath.Join(config.Outputdir, streamConfig.Output)
-
 	var cancel context.CancelFunc
 	ctx, cancel = context.WithTimeout(ctx, config.Timeout)
 	defer cancel()
@@ -57,12 +55,22 @@ func handleStream(ctx context.Context, config Config, streamConfig StreamConfig)
 	cmd := exec.CommandContext(ctx, "ffmpeg",
 		"-i", streamConfig.Src,
 		"-frames:v", "1",
-		"-update", "true",
-		"-y", output,
+		"-f", "image2pipe",
+		"-c:v", "mjpeg",
+		"-",
 	)
 
-	if out, err := cmd.CombinedOutput(); err != nil {
-		logger.PrintError(apperrors.Wrap(err, "ffmpeg failed for %s: %s", streamConfig.Src, string(out)))
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+
+	if err := cmd.Run(); err != nil {
+		logger.PrintError(apperrors.Wrap(err, "ffmpeg failed for %s: %s", streamConfig.Src, stderr.String()))
+		return
+	}
+
+	if err := storage.Save(streamConfig.Output, stdout.Bytes()); err != nil {
+		logger.PrintError(err)
 		return
 	}
 }

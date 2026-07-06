@@ -14,10 +14,16 @@ func main() {
 		panic(err)
 	}
 
+	storage, err := app.NewStorage(config)
+	if err != nil {
+		panic(err)
+	}
+
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
-	app.HandleQueue(ctx, config)
+	app.HandleQueue(ctx, config, storage)
+	app.StartServer(ctx, config, storage)
 
 	<-ctx.Done()
 	logger.Info("shutting down...")

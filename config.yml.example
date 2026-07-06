@@ -1,0 +1,36 @@
+# Directory where screenshots are written when storage is "disk".
+# Relative paths are resolved from the process working directory.
+output_dir: './'
+
+# Maximum time in seconds to wait for a single ffmpeg capture before it is
+# aborted. Prevents a stalled/unreachable stream from blocking a worker.
+timeout: 10
+
+# Interval in seconds between capture rounds. On each tick every stream is
+# queued for a fresh screenshot.
+frequency: 5
+
+# Number of concurrent capture workers (bounded queue size). Must be >= 1.
+forks: 2
+
+# Where screenshots are kept: "disk" writes them to output_dir, "memory"
+# keeps only the latest frame per stream in memory. Defaults to "disk".
+storage: disk
+
+# Enable the HTTP server that serves the latest screenshot per stream.
+# Request path is the stream's output name, e.g. GET /cam1.jpg.
+server_enabled: true
+
+# Address the HTTP server listens on. Only used when server_enabled is true;
+# defaults to ':8080' when enabled and left empty.
+server_addr: ':8080'
+
+# Streams to capture. Each output name must be unique across the list.
+streams:
+    # src:    RTSP (or any ffmpeg-supported) input URL to capture from.
+    # output: File name for the screenshot; also the HTTP path when the
+    #         server is enabled.
+  - src: 'rtsp://localhost:8554/cam1'
+    output: 'cam1.jpg'
+  - src: 'rtsp://localhost:8554/cam2'
+    output: 'cam2.jpg'
