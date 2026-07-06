@@ -7,10 +7,14 @@ import (
 	"github.com/shatylos/ffmpeg-thumbnails/tools/apperrors"
 	"github.com/shatylos/ffmpeg-thumbnails/tools/logger"
 	"os/exec"
+	"sync"
 	"time"
 )
 
-var inProcess = map[string]bool{}
+var (
+	inProcessMu sync.Mutex
+	inProcess   = map[string]bool{}
+)
 
 func HandleQueue(ctx context.Context, config Config, storage Storage) {
 	queue := make(chan StreamConfig, config.Forks)
@@ -39,13 +43,18 @@ func HandleQueue(ctx context.Context, config Config, storage Storage) {
 }
 
 func handleStream(ctx context.Context, config Config, streamConfig StreamConfig, storage Storage) {
+	inProcessMu.Lock()
 	if inProcess[streamConfig.Output] {
+		inProcessMu.Unlock()
 		logger.Warning(fmt.Sprintf("stream handling [%s] still in progress", streamConfig.Output))
 		return
 	}
 	inProcess[streamConfig.Output] = true
+	inProcessMu.Unlock()
 	defer func() {
+		inProcessMu.Lock()
 		inProcess[streamConfig.Output] = false
+		inProcessMu.Unlock()
 	}()
 
 	var cancel context.CancelFunc
